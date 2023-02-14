@@ -1,15 +1,18 @@
 <template>
   <div class="dndflow" @drop="onDrop">
-    <VueFlow @dragover="onDragOver" />
+    <VueFlow @dragover="onDragOver">
+      <Controls />
+    </VueFlow>
   </div>
 </template>
 
 <script setup>
 import { VueFlow, useVueFlow } from "@vue-flow/core";
+import { Controls } from "@vue-flow/controls";
 import { nextTick, watch } from "vue";
 
 let id = 0;
-const getId = () => `dndnode_${id++}`; 
+const getId = () => `dndnode_${id++}`;
 
 const {
   findNode,
@@ -26,8 +29,10 @@ const {
     {
       id: "1",
       type: "input",
-      label: "input node",
+      label: "Text Message",
       position: { x: 250, y: 25 },
+      width: 300,
+      height: 100,
     },
   ],
 });
@@ -43,26 +48,28 @@ const onDragOver = (event) => {
 onConnect((params) => addEdges([params]));
 
 const onDrop = (event) => {
-  const type = event.dataTransfer?.getData("application/vueflow");
-
-  const { left, top } = vueFlowRef.value.getBoundingClientRect();
-
-  const position = project({
-    x: event.clientX - left,
-    y: event.clientY - top,
-  });
-
-  const newNode = {
-    id: getId(),
-    type,
-    position,
-    label: `${type} node`,
-  };
-
-  addNodes([newNode]);
-
-  // align node position after drop, so it's centered to the mouse
   nextTick(() => {
+    const type = event.dataTransfer?.getData("application/vueflow");
+
+    const { left, top } = vueFlowRef.value.getBoundingClientRect();
+
+    const position = project({
+      x: event.clientX - left,
+      y: event.clientY - top,
+    });
+
+    const newNode = {
+      id: getId(),
+      type,
+      position,
+      label: `${type} node`,
+      width: 300,
+      height: 100,
+    };
+
+    addNodes([newNode]);
+
+
     const node = findNode(newNode.id);
     const stop = watch(
       () => node.dimensions,

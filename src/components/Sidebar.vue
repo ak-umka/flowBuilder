@@ -34,7 +34,7 @@
               :draggable="true"
               @dragstart="onDragStart($event, 'input')"
             >
-              Input Node
+              <div>Input Node</div>
             </div>
 
             <div
